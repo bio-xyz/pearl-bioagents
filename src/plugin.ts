@@ -15,6 +15,7 @@ import {
 } from "@elizaos/core";
 import { z } from "zod";
 import starterTestSuite from "./tests";
+import { crow } from "./actions";
 
 /**
  * Define the configuration schema for the plugin with the following properties:
@@ -162,10 +163,13 @@ export class StarterService extends Service {
 }
 
 const plugin: Plugin = {
-  name: "starter",
-  description: "A starter plugin for Eliza",
+  name: "futurehouse-api",
+  description:
+    "A plugin that allows you to access the FutureHouse API from your agent",
   config: {
-    EXAMPLE_PLUGIN_VARIABLE: process.env.EXAMPLE_PLUGIN_VARIABLE,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    FUTUREHOUSE_API_KEY: process.env.FUTUREHOUSE_API_KEY,
   },
   async init(config: Record<string, string>) {
     logger.info("*** Initializing starter plugin ***");
@@ -185,41 +189,7 @@ const plugin: Plugin = {
       throw error;
     }
   },
-  models: {
-    [ModelType.TEXT_SMALL]: async (
-      _runtime,
-      { prompt, stopSequences = [] }: GenerateTextParams
-    ) => {
-      return "Never gonna give you up, never gonna let you down, never gonna run around and desert you...";
-    },
-    [ModelType.TEXT_LARGE]: async (
-      _runtime,
-      {
-        prompt,
-        stopSequences = [],
-        maxTokens = 8192,
-        temperature = 0.7,
-        frequencyPenalty = 0.7,
-        presencePenalty = 0.7,
-      }: GenerateTextParams
-    ) => {
-      return "Never gonna make you cry, never gonna say goodbye, never gonna tell a lie and hurt you...";
-    },
-  },
   tests: [starterTestSuite],
-  routes: [
-    {
-      name: "helloworld",
-      path: "/helloworld",
-      type: "GET",
-      handler: async (_req: any, res: any) => {
-        // send a response
-        res.json({
-          message: "Hello World!",
-        });
-      },
-    },
-  ],
   events: {
     MESSAGE_RECEIVED: [
       async (params) => {
@@ -251,7 +221,7 @@ const plugin: Plugin = {
     ],
   },
   services: [StarterService],
-  actions: [helloWorldAction],
+  actions: [crow],
   providers: [helloWorldProvider],
 };
 
