@@ -7,11 +7,12 @@ import type {
   Content,
 } from "@elizaos/core";
 import { logger } from "@elizaos/core";
+import { FutureHouseClient } from "./futurehouse";
 
 export const crow: Action = {
-  name: "Crow",
-  similes: ["CROW", "CROW_AGENT", "CROW_AGENT_ACTION"],
-  description: "Access the Crow Agent",
+  name: "CROW",
+  similes: ["CROW_AGENT", "CROW_AGENT_ACTION"],
+  description: "Access the Crow Agent", // TODO: be more descriptive
   validate: async (
     runtime: IAgentRuntime,
     message: Memory,
@@ -42,7 +43,23 @@ export const crow: Action = {
     try {
       logger.info("Executing CROW");
 
-      // Hit https://api.platform.futurehouse.org/v0.1/crows
+      const client = new FutureHouseClient(
+        runtime.getSetting("FUTUREHOUSE_API_KEY")
+      );
+
+      const response = await client.crow(message.content.text);
+
+      if (!response) {
+        const responseContent: Content = {
+          text: "Looks like there was an error executing the CROW agent action, please check logs",
+          actions: ["CROW"],
+          source: "FutureHouse API Platform",
+        };
+
+        await callback(responseContent);
+
+        return responseContent;
+      }
 
       const responseContent: Content = {
         text: "<Crow Agent API Response>",
@@ -62,14 +79,14 @@ export const crow: Action = {
       {
         name: "{{name1}}",
         content: {
-          text: "",
+          text: "Use the crow agent to conduct the research on this topic: 'What are the latest developments in mRNA vaccine technology?'",
         },
       },
       {
         name: "{{name2}}",
         content: {
-          text: "hello world!",
-          actions: ["HELLO_WORLD"],
+          text: "Right On! Let me the start a research on the developments in mRNA vaccine technology utilizing the Crow Agent",
+          actions: ["CROW"],
         },
       },
     ],
