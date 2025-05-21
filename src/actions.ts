@@ -12,12 +12,14 @@ import { FutureHouseClient } from "./futurehouse";
 export const crow: Action = {
   name: "CROW",
   similes: ["CROW_AGENT", "CROW_AGENT_ACTION"],
-  description: "Access the Crow Agent", // TODO: be more descriptive
+  description:
+    "Triggers the FutureHouse Crow Agent to perform AI-powered research queries and retrieve scientific insights from external knowledge bases.",
   validate: async (
     runtime: IAgentRuntime,
     message: Memory,
     state: State
   ): Promise<boolean> => {
+    logger.info("Validate CROW start");
     const FUTUREHOUSE_API_KEY = runtime.getSetting("FUTUREHOUSE_API_KEY");
     if (!FUTUREHOUSE_API_KEY) {
       throw new Error("FUTUREHOUSE_API_KEY must be given");
@@ -30,6 +32,7 @@ export const crow: Action = {
     if (!ANTHROPIC_API_KEY) {
       throw new Error("ANTHROPIC_API_KEY must be given");
     }
+    logger.info("Validate CROW end");
     return true;
   },
   handler: async (

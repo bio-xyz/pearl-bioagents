@@ -5,7 +5,7 @@ import {
   type Project,
   type ProjectAgent,
 } from "@elizaos/core";
-import dotenv from "dotenv";
+import "dotenv/config";
 import starterPlugin from "./plugin";
 
 /**
@@ -79,6 +79,7 @@ export const character: Character = {
         name: "{{name1}}",
         content: {
           text: "Use the crow agent to conduct the research on this topic: 'What are the latest developments in mRNA vaccine technology?'",
+          actions: ["CROW"],
         },
       },
       {
