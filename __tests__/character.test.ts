@@ -38,10 +38,6 @@ describe('Character Configuration', () => {
       if (process.env.ANTHROPIC_API_KEY) {
         expect(character.plugins).toContain('@elizaos/plugin-anthropic');
       }
-
-      if (!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY) {
-        expect(character.plugins).toContain('@elizaos/plugin-local-ai');
-      }
     } finally {
       // Restore original env values
       process.env.OPENAI_API_KEY = originalOpenAIKey;

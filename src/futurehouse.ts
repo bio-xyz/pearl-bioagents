@@ -4,11 +4,17 @@ import { JobDefinitions, JobRequest } from "./types";
 export class FutureHouseClient {
   private BASE_URL: string = "https://api.platform.futurehouse.org";
   private API_KEY: string;
-  private accessToken: string;
+  private accessToken: string | undefined;
+  private authPromise: Promise<string>;
 
   constructor(apiKey: string) {
     this.API_KEY = apiKey;
-    this._getAuthToken().then((v) => (this.accessToken = v));
+    console.log(`FutureHouse API Key: ${this.API_KEY}`);
+    this.authPromise = this._getAuthToken();
+    this.authPromise.then((token) => {
+      this.accessToken = token;
+      console.log(`Access Token: ${this.accessToken}`);
+    });
   }
 
   private formRequestBody(jobType: JobDefinitions, query: string): string {
@@ -21,6 +27,10 @@ export class FutureHouseClient {
 
   private async researchRequest(jobType: JobDefinitions, query: string) {
     try {
+      if (!this.accessToken) {
+        this.accessToken = await this.authPromise;
+      }
+
       logger.info("Making request to FutureHouse");
       return await fetch(`${this.BASE_URL}/v0.1/crows`, {
         headers: {
@@ -38,16 +48,19 @@ export class FutureHouseClient {
   private async _getAuthToken(): Promise<string> {
     try {
       logger.info("Getting authtoken from FutureHouse");
-      const authResponse = await fetch(`${this.BASE_URL}/auth/login`, {
+      const authResponseObject = await fetch(`${this.BASE_URL}/auth/login`, {
         headers: {
           Accept: "*/*",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ api_key: this.API_KEY }),
         method: "POST",
       });
-      return authResponse["access_token"];
+      const authResponseJson = await authResponseObject.json();
+      return authResponseJson["access_token"];
     } catch (err) {
       logger.error("Error in FutureHouse API Auth", err);
+      throw err;
     }
   }
 

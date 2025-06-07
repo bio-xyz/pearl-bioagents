@@ -63,9 +63,9 @@ export const crow: Action = {
 
         return responseContent;
       }
-
+      const responseJson = await response.json();
       const responseContent: Content = {
-        text: "<Crow Agent API Response>",
+        text: JSON.stringify(responseJson),
         actions: ["CROW"],
         source: "FutureHouse API Platform",
       };

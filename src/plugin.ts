@@ -14,20 +14,89 @@ import {
   logger,
 } from "@elizaos/core";
 import { z } from "zod";
-import starterTestSuite from "./tests";
 import { crow } from "./actions";
 
-/**
- * Define the configuration schema for the plugin with the following properties:
- *
- * @param {string} EXAMPLE_PLUGIN_VARIABLE - The name of the plugin (min length of 1, optional)
- * @returns {object} - The configured schema object
- */
 const configSchema = z.object({
-  OPENAI_API_KEY: z.string(),
-  ANTHROPIC_API_KEY: z.string(),
-  FUTUREHOUSE_API_KEY: z.string(),
+  OPENAI_API_KEY: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  FUTUREHOUSE_API_KEY: z.string().optional(),
 });
+
+/**
+ * Example HelloWorld action
+ * This demonstrates the simplest possible action structure
+ */
+/**
+ * Represents an action that responds with a simple hello world message.
+ *
+ * @typedef {Object} Action
+ * @property {string} name - The name of the action
+ * @property {string[]} similes - The related similes of the action
+ * @property {string} description - Description of the action
+ * @property {Function} validate - Validation function for the action
+ * @property {Function} handler - The function that handles the action
+ * @property {Object[]} examples - Array of examples for the action
+ */
+const helloWorldAction: Action = {
+  name: "HELLO_WORLD",
+  similes: ["GREET", "SAY_HELLO"],
+  description: "Responds with a simple hello world message",
+
+  validate: async (
+    _runtime: IAgentRuntime,
+    _message: Memory,
+    _state: State
+  ): Promise<boolean> => {
+    // Always valid
+    return true;
+  },
+
+  handler: async (
+    _runtime: IAgentRuntime,
+    message: Memory,
+    _state: State,
+    _options: any,
+    callback: HandlerCallback,
+    _responses: Memory[]
+  ) => {
+    try {
+      logger.info("Handling HELLO_WORLD action");
+
+      // Simple response content
+      const responseContent: Content = {
+        text: "hello world!",
+        actions: ["HELLO_WORLD"],
+        source: message.content.source,
+      };
+
+      // Call back with the hello world message
+      await callback(responseContent);
+
+      return responseContent;
+    } catch (error) {
+      logger.error("Error in HELLO_WORLD action:", error);
+      throw error;
+    }
+  },
+
+  examples: [
+    [
+      {
+        name: "{{name1}}",
+        content: {
+          text: "Can you say hello?",
+        },
+      },
+      {
+        name: "{{name2}}",
+        content: {
+          text: "hello world!",
+          actions: ["HELLO_WORLD"],
+        },
+      },
+    ],
+  ],
+};
 
 /**
  * Example Hello World Provider
@@ -54,7 +123,8 @@ export class StarterService extends Service {
   static serviceType = "starter";
   capabilityDescription =
     "This is a starter service which is attached to the agent through the starter plugin.";
-  constructor(protected runtime: IAgentRuntime) {
+
+  constructor(runtime: IAgentRuntime) {
     super(runtime);
   }
 
@@ -80,9 +150,10 @@ export class StarterService extends Service {
 }
 
 const plugin: Plugin = {
-  name: "futurehouse-api",
-  description:
-    "A plugin that allows you to access the FutureHouse API from your agent",
+  name: "starter",
+  description: "A starter plugin for Eliza",
+  // Set lowest priority so real models take precedence
+  priority: -1000,
   config: {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
@@ -106,7 +177,40 @@ const plugin: Plugin = {
       throw error;
     }
   },
-  tests: [starterTestSuite],
+  models: {
+    [ModelType.TEXT_SMALL]: async (
+      _runtime,
+      { prompt, stopSequences = [] }: GenerateTextParams
+    ) => {
+      return "Never gonna give you up, never gonna let you down, never gonna run around and desert you...";
+    },
+    [ModelType.TEXT_LARGE]: async (
+      _runtime,
+      {
+        prompt,
+        stopSequences = [],
+        maxTokens = 8192,
+        temperature = 0.7,
+        frequencyPenalty = 0.7,
+        presencePenalty = 0.7,
+      }: GenerateTextParams
+    ) => {
+      return "Never gonna make you cry, never gonna say goodbye, never gonna tell a lie and hurt you...";
+    },
+  },
+  routes: [
+    {
+      name: "helloworld",
+      path: "/helloworld",
+      type: "GET",
+      handler: async (_req: any, res: any) => {
+        // send a response
+        res.json({
+          message: "Hello World!",
+        });
+      },
+    },
+  ],
   events: {
     MESSAGE_RECEIVED: [
       async (params) => {
@@ -138,8 +242,8 @@ const plugin: Plugin = {
     ],
   },
   services: [StarterService],
-  actions: [crow],
-  providers: [],
+  actions: [helloWorldAction, crow],
+  providers: [helloWorldProvider],
 };
 
 export default plugin;

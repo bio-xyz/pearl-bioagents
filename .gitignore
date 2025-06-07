@@ -1,5 +1,7 @@
+# folders
 dist/
 node_modules/
+.elizadb/
+
+# files
 .env
-db/
-elizadb/
