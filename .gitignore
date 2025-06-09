@@ -5,3 +5,6 @@ node_modules/
 
 # files
 .env
+
+# macOS Nuisances
+.DS_Store
