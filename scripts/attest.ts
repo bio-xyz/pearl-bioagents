@@ -5,6 +5,7 @@ import {
 } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import "dotenv/config";
+import crypto from "crypto";
 
 // Configuration constants
 const EAS_CONTRACT_ADDRESS = "0x4200000000000000000000000000000000000021";
@@ -21,21 +22,30 @@ async function attest() {
 
     // Initialize SchemaEncoder with the schema string
     const schemaEncoder = new SchemaEncoder(
-      "string endpoint,uint256 statusCode,uint256 timestamp,bytes32 responseHash"
+      "string endpoint,uint256 statusCode,uint256 timestamp,string trajectoryId,string agentMode"
     );
     const encodedData = schemaEncoder.encodeData([
       { name: "endpoint", value: "/v0.1/crows", type: "string" },
       { name: "statusCode", value: 200, type: "uint256" },
-      { name: "timestamp", value: 1749471048885, type: "uint256" },
       {
-        name: "responseHash",
-        value: "620df451e4c04f80c6cba0ae6093",
-        type: "bytes32",
+        name: "timestamp",
+        value: Math.floor(Date.now() / 1e3),
+        type: "uint256",
+      },
+      {
+        name: "trajectoryId",
+        value: crypto.randomUUID(),
+        type: "string",
+      },
+      {
+        name: "agentMode",
+        value: "PHOENIX",
+        type: "string",
       },
     ]);
 
     const schemaUID =
-      "0x3c4e5a80067fbc845ac6aee811e0dc9798a76d32df383f6c5279f8e57c248c9e";
+      "0xd944ecf37244acba594544a9bf911abf61cff830bf83f6a19b3d2e864498b1f1";
 
     const tx = await eas.attest({
       schema: schemaUID,

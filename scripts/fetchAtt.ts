@@ -4,21 +4,19 @@ import "dotenv/config";
 
 async function fetchAttestation() {
   // Use constants for configurations
-  const EAS_CONTRACT_ADDRESS = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e"; // Sepolia v0.26 address
+  const EAS_CONTRACT_ADDRESS = "0x4200000000000000000000000000000000000021";
 
-  // Initialize EAS and provider
   const eas = new EAS(EAS_CONTRACT_ADDRESS);
   const provider = new ethers.JsonRpcProvider(
-    process.env.ETH_SEPOLIA_HTTPS_RPC
+    process.env.BASE_SEPOLIA_HTTPS_RPC
   );
   eas.connect(provider);
 
-  // Define UID as a constant if it's not dynamic
   const UID =
-    "0x62aa93fbae908100345fe96150c6f57ea70946bd8dec4df99bcdb7186f233e39";
+    "0x756507cfcaf8110327849b032926fea8749f5edb1babac405e045052c852bd81";
 
   try {
-    const attestation = await eas.getAttestation(UID); // This function returns an attestation object
+    const attestation = await eas.getAttestation(UID);
     console.log(attestation);
   } catch (error) {
     console.error("Error fetching attestation:", error);

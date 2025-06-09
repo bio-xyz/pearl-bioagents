@@ -20,9 +20,9 @@ async function registerSchema(schema: string, revocable: boolean) {
       revocable,
     });
 
-    await transaction.wait();
+    const uid = await transaction.wait();
 
-    return `Schema: ${schema} registered`;
+    return `Schema: ${schema} registered, UID: ${uid}`;
   } catch (err) {
     console.error(err);
     return `Schema registered errored :(`;
@@ -30,7 +30,7 @@ async function registerSchema(schema: string, revocable: boolean) {
 }
 
 const schema =
-  "string endpoint,uint256 statusCode,uint256 timestamp,bytes32 responseHash";
+  "string endpoint,uint256 statusCode,uint256 timestamp,string trajectoryId,string agentMode";
 const revocable = true;
 
 const result = await registerSchema(schema, revocable);
