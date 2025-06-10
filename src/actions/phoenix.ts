@@ -7,19 +7,19 @@ import type {
   Content,
 } from "@elizaos/core";
 import { logger } from "@elizaos/core";
-import { FutureHouseClient } from "./futurehouse";
+import { FutureHouseClient } from "../futurehouse";
 
-export const crow: Action = {
-  name: "CROW",
-  similes: ["CROW_AGENT", "CROW_AGENT_ACTION"],
+export const phoenix: Action = {
+  name: "PHOENIX",
+  similes: ["PHOENIX_AGENT", "PHOENIX_AGENT_ACTION"],
   description:
-    "Triggers the FutureHouse Crow Agent to perform AI-powered research queries and retrieve scientific insights from external knowledge bases.",
+    "Triggers the FutureHouse Phoenix Agent to perform AI-powered research queries and retrieve scientific insights from external knowledge bases.",
   validate: async (
     runtime: IAgentRuntime,
     message: Memory,
     state: State
   ): Promise<boolean> => {
-    logger.info("Validate CROW start");
+    logger.info("Validate PHOENIX start");
     const FUTUREHOUSE_API_KEY = runtime.getSetting("FUTUREHOUSE_API_KEY");
     if (!FUTUREHOUSE_API_KEY) {
       throw new Error("FUTUREHOUSE_API_KEY must be given");
@@ -32,7 +32,7 @@ export const crow: Action = {
     if (!ANTHROPIC_API_KEY) {
       throw new Error("ANTHROPIC_API_KEY must be given");
     }
-    logger.info("Validate CROW end");
+    logger.info("Validate PHOENIX end");
     return true;
   },
   handler: async (
@@ -44,18 +44,17 @@ export const crow: Action = {
     responses: Memory[]
   ) => {
     try {
-      logger.info("Executing CROW");
-
+      logger.info("Executing PHOENIX");
       const client = new FutureHouseClient(
         runtime.getSetting("FUTUREHOUSE_API_KEY")
       );
 
-      const response = await client.crow(message.content.text);
+      const response = await client.phoenix(message.content.text);
 
       if (!response) {
         const responseContent: Content = {
-          text: "Looks like there was an error executing the CROW agent action, please check logs",
-          actions: ["CROW"],
+          text: "Looks like there was an error executing PHOENIX agent action, please check logs",
+          actions: ["PHOENIX"],
           source: "FutureHouse API Platform",
         };
 
@@ -66,15 +65,15 @@ export const crow: Action = {
       const responseJson = await response.json();
       const responseContent: Content = {
         text: JSON.stringify(responseJson),
-        actions: ["CROW"],
+        actions: ["PHOENIX"],
         source: "FutureHouse API Platform",
       };
 
       await callback(responseContent);
 
       return responseContent;
-    } catch (error) {
-      logger.error("Some error occured in CROW action:", error);
+    } catch (err) {
+      logger.error("Some error occurred in PHOENIX action: ", err);
     }
   },
   examples: [
@@ -82,14 +81,14 @@ export const crow: Action = {
       {
         name: "{{name1}}",
         content: {
-          text: "Use the crow agent to conduct the research on this topic: 'What are the latest developments in mRNA vaccine technology?'",
+          text: "Use the phoenix agent to conduct the research on this topic: 'What are the latest developments in mRNA vaccine technology?'",
         },
       },
       {
         name: "{{name2}}",
         content: {
-          text: "Right On! Let me the start a research on the developments in mRNA vaccine technology utilizing the Crow Agent",
-          actions: ["CROW"],
+          text: "Right On! Let me the start a research on the developments in mRNA vaccine technology utilizing the Phoenix Agent",
+          actions: ["PHOENIX"],
         },
       },
     ],

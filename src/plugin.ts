@@ -14,7 +14,7 @@ import {
   logger,
 } from "@elizaos/core";
 import { z } from "zod";
-import { crow } from "./actions";
+import { crow, owl, phoenix, falcon } from "./actions";
 
 const configSchema = z.object({
   OPENAI_API_KEY: z.string().optional(),
@@ -242,7 +242,7 @@ const plugin: Plugin = {
     ],
   },
   services: [StarterService],
-  actions: [helloWorldAction, crow],
+  actions: [crow, owl, phoenix, falcon],
   providers: [helloWorldProvider],
 };
 
