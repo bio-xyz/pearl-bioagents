@@ -200,13 +200,12 @@ const plugin: Plugin = {
   },
   routes: [
     {
-      name: "helloworld",
-      path: "/helloworld",
+      name: "Health Check",
+      path: "/healthcheck",
       type: "GET",
       handler: async (_req: any, res: any) => {
-        // send a response
         res.json({
-          message: "Hello World!",
+          is_transitioning_fast: true,
         });
       },
     },
