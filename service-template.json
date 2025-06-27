@@ -1,6 +1,6 @@
 {
   "name": "futurehouse-research-agent",
-  "hash": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+  "hash": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi", // placeholder
   "description": "An AI research agent that provides scientific research capabilities through FutureHouse's platform, offering four specialized research job types: Crow (PaperQA2), Falcon (Deep PaperQA2), Owl (HasAnyone), and Phoenix for comprehensive scientific literature analysis and research assistance.",
   "image": "",
   "service_version": "v0.1.0",
