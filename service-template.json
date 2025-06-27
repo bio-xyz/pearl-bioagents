@@ -1,0 +1,68 @@
+{
+  "name": "futurehouse-research-agent",
+  "hash": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+  "description": "An AI research agent that provides scientific research capabilities through FutureHouse's platform, offering four specialized research job types: Crow (PaperQA2), Falcon (Deep PaperQA2), Owl (HasAnyone), and Phoenix for comprehensive scientific literature analysis and research assistance.",
+  "image": "",
+  "service_version": "v0.1.0",
+  "home_chain": "base",
+  "configurations": {
+    "base": {
+      "nft": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+      "threshold": 1,
+      "agent_id": "1",
+      "use_staking": "false",
+      "staking_program_id": "",
+      "use_mech_marketplace": false,
+      "fund_requirements": {
+        "0x0000000000000000000000000000000000000000": {
+          "agent": 5000000000000000,
+          "safe": 5000000000000000
+        },
+        "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": {
+          "agent": 0,
+          "safe": 5000000000000000
+        }
+      }
+    },
+    "base-sepolia": {
+      "nft": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+      "threshold": 1,
+      "agent_id": "1",
+      "use_staking": "false",
+      "staking_program_id": "",
+      "use_mech_marketplace": false,
+      "fund_requirements": {
+        "0x0000000000000000000000000000000000000000": {
+          "agent": 5000000000000000,
+          "safe": 5000000000000000
+        }
+      }
+    }
+  },
+  "env_variables": {
+    "OPENAI_API_KEY": {
+      "name": "OpenAI API Key",
+      "description": "API key for OpenAI services, used for text generation and embeddings",
+      "value": "",
+      "provision_type": "user"
+    },
+    "ANTHROPIC_API_KEY": {
+      "name": "Anthropic API Key",
+      "description": "API key for Anthropic Claude services, used for advanced text generation",
+      "value": "",
+      "provision_type": "user"
+    },
+    "FUTUREHOUSE_API_KEY": {
+      "name": "FutureHouse API Key",
+      "description": "API key for FutureHouse platform to access research job services (Crow, Falcon, Owl, Phoenix)",
+      "value": "",
+      "provision_type": "user"
+    },
+    "BASE_SEPOLIA_HTTPS_RPC": {
+      "name": "Base Sepolia RPC URL",
+      "description": "HTTPS RPC endpoint for Base Sepolia testnet",
+      "value": "",
+      "provision_type": "user"
+    }
+  }
+}
